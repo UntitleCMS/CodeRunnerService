@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { DisconnectReason, Socket } from "socket.io";
 import { SocketInterface } from "../common/socket.interface";
 import { CodeRunnerFactory } from "../services/cod-runner/code-runner.factory";
 import { CodeDto } from "../common/dto/code-dto";
@@ -17,6 +17,7 @@ interface ServerToClientEvents {
 interface ClientToServerEvents {
   "run": (code: CodeDto) => void;
   "stdin": (input: string) => void;
+  "kill": (sigkill: number|null) => void;
 }
 
 interface SocketData {
@@ -37,6 +38,8 @@ export class CodeRunners implements SocketInterface {
 
     socket.on("run", this.onRun(socket));
     socket.on("stdin", this.onInput(socket));
+    socket.on("disconnect", this.onDisconnect(socket));
+    socket.on("kill", this.onKill(socket));
   }
 
 
@@ -58,15 +61,36 @@ export class CodeRunners implements SocketInterface {
 
   private onRun(socket: SocketType) {
     return (code: CodeDto) => this.catchError(socket, () => {
-      console.debug("Run code ", code);
 
-      socket.data.isRunning = true;
-      this.createResultPipe(socket);
+      this.onKill(socket)();
+      socket.data.isRunning = false;
 
-      const runner = CodeRunnerFactory.createCodeRunner(code.language)
-      runner.execute(code, socket.data.resultPipe);
+      if (!socket.data.isRunning){
+        console.debug("Run code ", code);
+
+        socket.data.isRunning = true;
+        this.createResultPipe(socket);
+
+        const runner = CodeRunnerFactory.createCodeRunner(code.language)
+        runner.execute(code, socket.data.resultPipe);
+      }
     })
 
+  }
+
+  private onKill(socket:SocketType){
+    return (sigkill: number|null = null) => this.catchError(socket, () => {
+      if (socket.data.isRunning){
+        socket.data.resultPipe?.next({type:"kill", data:sigkill});
+        socket.data.isRunning = false;
+      }
+    });
+  }
+
+  private onDisconnect(socket: SocketType) {
+    return (reason: DisconnectReason,discpript?:any) => this.catchError(socket, () => {
+      this.onKill(socket)();
+    });
   }
 
   private createResultPipe(socket: SocketType) {

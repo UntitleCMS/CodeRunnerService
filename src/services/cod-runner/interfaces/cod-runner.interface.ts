@@ -5,7 +5,8 @@ export type IO =
   | { type: 'stdin'; data: string }
   | { type: 'stdout'; data: string }
   | { type: 'stderr'; data: string }
-  | { type: 'exit'; data: number | null };
+  | { type: 'exit'; data: number | null }
+  | { type: 'kill'; data: number | null };
 
 export interface ICodeRunner {
   /**

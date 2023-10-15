@@ -13,7 +13,7 @@ export class Python3Runner extends BaseRunner implements ICodeRunner {
 
   protected createChildProcess(code: CodeDto): ChildProcessWithoutNullStreams {
     const name = this.fileStorage.saveSourceCode(code.sourcecode, "py")
-    return spawn("ssh", `${this._slave_host} python /config/sourcecode/${name}`.split(' ') );
+    return spawn("ssh", `${this._slave_host} python -u /config/sourcecode/${name}`.split(' ') );
   }
 
 }

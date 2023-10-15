@@ -15,6 +15,7 @@ export abstract class BaseRunner implements ICodeRunner {
     this.castOutput(p, resultPipe)
     this.castError(p, resultPipe)
     this.listenInput(p, resultPipe);
+    this.listenKill(p, resultPipe);
 
     p.on("close", () => { resultPipe.complete(); console.log("closed") })
     p.on("exit", (code) => { resultPipe.next({ type: "exit", data: code }); console.log(`exit code: ${code}`) })
@@ -26,6 +27,18 @@ export abstract class BaseRunner implements ICodeRunner {
    * @param code code to run
    */
   protected abstract createChildProcess(code: CodeDto): ChildProcessWithoutNullStreams;
+
+  protected listenKill(p: ChildProcessWithoutNullStreams, resultPipe: Subject<IO>) {
+    resultPipe.pipe(
+      tap(data => {
+        if (data.type == "kill") {
+          console.log("Killing child process : ", p.pid);
+          p.stdin.write(String.fromCharCode(3)); // CTRL + C to kill child process
+          p.kill(data.data ?? undefined);
+        }
+      })
+    ).subscribe();
+  }
 
   protected listenInput(p: ChildProcessWithoutNullStreams, resultPipe: Subject<IO>) {
     resultPipe.pipe(
