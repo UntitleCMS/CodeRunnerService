@@ -38,3 +38,15 @@ services:
     volumes:
       - ./CompilerContainer/Keys:/config/.ssh
       - ./CompilerContainer/SourceCode:/config/sourcecode
+
+
+  gcc-slave:
+    image: gcc-slave
+    build:
+      context: ./CompilerContainer
+      dockerfile: GCC.Dockerfile
+    environment:
+      USER_NAME: runner
+    volumes:
+      - ./CompilerContainer/Keys:/config/.ssh
+      - ./CompilerContainer/SourceCode:/config/sourcecode
