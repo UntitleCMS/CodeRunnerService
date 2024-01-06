@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PythonRunner } from '@app/python';
 import { RunnerFactory } from './factories/runner.factory';
 import { LexicalFactory } from './factories/lexical.factory';
+import { QuotaRepositoryService } from './services/quota-repository/quota-repository.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -12,7 +13,8 @@ import { LexicalFactory } from './factories/lexical.factory';
   providers: [
     EventGateway,
     RunnerFactory,
-    LexicalFactory
+    LexicalFactory,
+    QuotaRepositoryService
   ],
 })
 export class AppModule {}

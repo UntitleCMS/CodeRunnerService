@@ -11,10 +11,11 @@ import { StoreInterceptor } from 'src/interceptors/store/store.interceptor';
 import { ProcessIOListener } from './processIO.listenner';
 import { SocketData } from 'src/models/socket-data';
 import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-process/ensure-hass-process.interceptor';
+import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
 
 @WebSocketGateway()
 export class EventGateway {
-  constructor(private readonly runnerFactory: RunnerFactory) {}
+  constructor(private readonly runnerFactory: RunnerFactory, private readonly quotaRepo: QuotaRepositoryService) {}
 
   @UseInterceptors(
     ClearProcessInterceptor,
@@ -30,6 +31,7 @@ export class EventGateway {
     new ProcessIOListener(client, ps);
     const socketData = client.data as SocketData;
     socketData.process = ps;
+    this.quotaRepo.increset(client.handshake.address);
   }
 
   @UseInterceptors(EnsureHasProcessInterceptor)

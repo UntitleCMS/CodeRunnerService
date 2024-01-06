@@ -1,16 +1,30 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
+import { Observable, of } from 'rxjs';
 import { Socket } from 'socket.io';
+import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
 
 @Injectable()
 export class QuotaInterceptor implements NestInterceptor {
+
+  constructor(private quotaRepo: QuotaRepositoryService, private config:ConfigService){}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     console.log(">> Quota Check Interceptor");
     
     const sock = context.switchToWs();
     const client:Socket = sock.getClient();
-    console.log("Your IP :", client.handshake.address, "have infinit quota left.");
+    const ip = client.handshake.address;
+    const QUOTA_MAX = this.config.get<number>("EXECUTION_QUOTA") ?? 5;
 
-    return next.handle();
+    const quota = QUOTA_MAX - this.quotaRepo.totalExcete(ip);
+
+    console.log("Your IP ", ip, `have ${quota} quota left.`);
+    
+    if(quota>0)
+      return next.handle();
+
+    (sock.getClient() as Socket).emit("error", `Your IP : "${ip}" have no quota left.`);
+    return of();
   }
 }
