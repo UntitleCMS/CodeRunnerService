@@ -33,6 +33,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/python/tsconfig.lib.json"
       }
+    },
+    "java": {
+      "type": "library",
+      "root": "libs/java",
+      "entryFile": "index",
+      "sourceRoot": "libs/java/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/java/tsconfig.lib.json"
+      }
     }
   }
 }

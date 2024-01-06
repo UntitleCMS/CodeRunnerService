@@ -35,6 +35,12 @@
       ],
       "@app/python/*": [
         "libs/python/src/*"
+      ],
+      "@app/java": [
+        "libs/java/src"
+      ],
+      "@app/java/*": [
+        "libs/java/src/*"
       ]
     }
   }
