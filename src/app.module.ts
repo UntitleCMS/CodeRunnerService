@@ -4,6 +4,7 @@ import { EventGateway } from './event/event.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { PythonRunner } from '@app/python';
 import { RunnerFactory } from './factories/runner.factory';
+import { LexicalFactory } from './factories/lexical.factory';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -11,6 +12,7 @@ import { RunnerFactory } from './factories/runner.factory';
   providers: [
     EventGateway,
     RunnerFactory,
+    LexicalFactory
   ],
 })
 export class AppModule {}
