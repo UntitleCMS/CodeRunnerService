@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  python-slave:
+    image: python-slave
+    build:
+      context: ./CompilerContainer
+      dockerfile: Python.Dockerfile
+    environment:
+      USER_NAME: runner
+    volumes:
+      - ./CompilerContainer/Keys:/config/.ssh
+      - ./CompilerContainer/SourceCode:/config/sourcecode
+    ports:
+      - "2222:2222"

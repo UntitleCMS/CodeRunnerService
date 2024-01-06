@@ -29,6 +29,12 @@
       ],
       "@app/common/*": [
         "libs/common/src/*"
+      ],
+      "@app/python": [
+        "libs/python/src"
+      ],
+      "@app/python/*": [
+        "libs/python/src/*"
       ]
     }
   }

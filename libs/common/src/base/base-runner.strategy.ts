@@ -55,7 +55,8 @@ export abstract class BaseRunner implements CodeRunnerStrategy {
         tap((data) => {
           if (data.type == 'kill') {
             console.log('Killing child process : ', p.pid);
-            p.kill(data.data);
+            p.stdin.end();
+            p.kill('SIGKILL');
           }
         }),
       )

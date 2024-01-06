@@ -24,6 +24,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "python": {
+      "type": "library",
+      "root": "libs/python",
+      "entryFile": "index",
+      "sourceRoot": "libs/python/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/python/tsconfig.lib.json"
+      }
     }
   }
 }

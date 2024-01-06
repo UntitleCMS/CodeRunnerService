@@ -1,7 +1,9 @@
 import { SourceCodeModel, SourceCodeVerificatorStrategy } from "@app/core";
 import { SyntaxNode } from "tree-sitter";
+const Parser = require('tree-sitter');
 
 export abstract class BaseSourceCodeVerificator implements SourceCodeVerificatorStrategy {
+  protected parser = new Parser();
 
   constructor(){}
 
