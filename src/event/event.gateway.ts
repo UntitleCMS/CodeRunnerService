@@ -10,6 +10,7 @@ import { SecurityInterceptor } from 'src/interceptors/security/security.intercep
 import { StoreInterceptor } from 'src/interceptors/store/store.interceptor';
 import { ProcessIOListener } from './processIO.listenner';
 import { SocketData } from 'src/models/socket-data';
+import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-process/ensure-hass-process.interceptor';
 
 @WebSocketGateway()
 export class EventGateway {
@@ -31,12 +32,14 @@ export class EventGateway {
     socketData.process = ps;
   }
 
+  @UseInterceptors(EnsureHasProcessInterceptor)
   @SubscribeMessage('stdin')
   forwardInput(client: Socket, stdin: string) {
     const socketData = client.data as SocketData;
     socketData.process.stdin(stdin);
   }
 
+  @UseInterceptors(EnsureHasProcessInterceptor)
   @SubscribeMessage('kill')
   killProcess(client: Socket, sigkill: number) {
     const socketData = client.data as SocketData;
