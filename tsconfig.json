@@ -41,6 +41,12 @@
       ],
       "@app/java/*": [
         "libs/java/src/*"
+      ],
+      "@app/gcc": [
+        "libs/gcc/src"
+      ],
+      "@app/gcc/*": [
+        "libs/gcc/src/*"
       ]
     }
   }

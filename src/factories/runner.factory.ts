@@ -1,4 +1,5 @@
 import { Language, SshConnectionConfig } from '@app/core';
+import { C12Runner } from '@app/gcc';
 import { Java17Runner } from '@app/java';
 import { PythonRunner } from '@app/python';
 import { Injectable } from '@nestjs/common';
@@ -24,6 +25,13 @@ export class RunnerFactory {
       config.port = this.config.get('JAVA_SANDBOX_PORT');
       config.username = this.config.get('JAVA_SANDBOX_USER');
       return new Java17Runner(config);
+    }
+
+    if (language == Language.C12){
+      config.key = this.config.get('GCC_SANDBOX_KEY');
+      config.port = this.config.get('GCC_SANDBOX_PORT');
+      config.username = this.config.get('GCC_SANDBOX_USER');
+      return new C12Runner(config);
     }
 
     throw new Error(`Language '${language}' is not supported`);

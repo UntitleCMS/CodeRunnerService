@@ -31,6 +31,7 @@
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.2",
     "tree-sitter": "^0.20.6",
+    "tree-sitter-c": "^0.20.6",
     "tree-sitter-java": "^0.20.2",
     "tree-sitter-python": "^0.20.4"
   },
@@ -81,7 +82,8 @@
       "^@app/core(|/.*)$": "<rootDir>/libs/core/src/$1",
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/python(|/.*)$": "<rootDir>/libs/python/src/$1",
-      "^@app/java(|/.*)$": "<rootDir>/libs/java/src/$1"
+      "^@app/java(|/.*)$": "<rootDir>/libs/java/src/$1",
+      "^@app/gcc(|/.*)$": "<rootDir>/libs/gcc/src/$1"
     }
   }
 }

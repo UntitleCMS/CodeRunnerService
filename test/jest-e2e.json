@@ -18,6 +18,8 @@
     "@app/python/(.*)": "<rootDir>/../libs/python/src/$1",
     "@app/python": "<rootDir>/../libs/python/src",
     "@app/java/(.*)": "<rootDir>/../libs/java/src/$1",
-    "@app/java": "<rootDir>/../libs/java/src"
+    "@app/java": "<rootDir>/../libs/java/src",
+    "@app/gcc/(.*)": "<rootDir>/../libs/gcc/src/$1",
+    "@app/gcc": "<rootDir>/../libs/gcc/src"
   }
 }

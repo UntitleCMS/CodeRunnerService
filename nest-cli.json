@@ -42,6 +42,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/java/tsconfig.lib.json"
       }
+    },
+    "gcc": {
+      "type": "library",
+      "root": "libs/gcc",
+      "entryFile": "index",
+      "sourceRoot": "libs/gcc/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/gcc/tsconfig.lib.json"
+      }
     }
   }
 }
