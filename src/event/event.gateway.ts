@@ -47,4 +47,11 @@ export class EventGateway {
     const socketData = client.data as SocketData;
     socketData.process.kill(sigkill);
   }
+
+  // DEV
+  // todo : remove this event
+  @SubscribeMessage('dev:clear-console')
+  __clear_console(){
+    console.clear();
+  }
 }
