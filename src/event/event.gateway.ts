@@ -15,23 +15,38 @@ import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repo
 
 @WebSocketGateway()
 export class EventGateway {
-  constructor(private readonly runnerFactory: RunnerFactory, private readonly quotaRepo: QuotaRepositoryService) {}
+  constructor(
+    private readonly runnerFactory: RunnerFactory,
+    private readonly quotaRepo: QuotaRepositoryService,
+  ) {}
 
   @UseInterceptors(
     ClearProcessInterceptor,
     QuotaInterceptor,
     LexicalInterceptor,
     SecurityInterceptor,
-    StoreInterceptor
+    StoreInterceptor,
   )
   @SubscribeMessage('run')
   runCode(client: Socket, data: SourceCodeModel) {
+    // run code with matching language
     const runner = this.runnerFactory.create(data.language);
     const ps = runner.execute(data);
-    redirectOputputTo(client,ps);
+
+    // redirect oputput and save output subject to socket data
     const socketData = client.data as SocketData;
     socketData.process = ps;
+    redirectOputputTo(client, ps);
+
+    // count qouta
     this.quotaRepo.increset(client.handshake.address);
+
+    // remove process subject when completly run
+    ps.subscribe({
+      complete: () => {
+        socketData.process = null;
+      },
+    });
   }
 
   @UseInterceptors(EnsureHasProcessInterceptor)
@@ -51,7 +66,7 @@ export class EventGateway {
   // DEV
   // todo : remove this event
   @SubscribeMessage('dev:clear-console')
-  __clear_console(){
+  __clear_console() {
     console.clear();
   }
 }
