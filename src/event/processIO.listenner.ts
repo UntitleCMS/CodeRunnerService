@@ -1,17 +1,11 @@
-import { IOType, ProcessSubject } from "@app/core";
-import { Subscription, tap } from "rxjs";
-import { Socket } from "socket.io";
+import { IOType, ProcessSubject } from '@app/core';
+import { Socket } from 'socket.io';
 
-export class ProcessIOListener {
-    subscription: Subscription;
-
-    constructor(private socket: Socket, processIO : ProcessSubject){
-        this.subscription = processIO.subscribe(this.event);
+export function redirectOputputTo(socket: Socket, processIO: ProcessSubject) {
+  console.info('Redirecting output to client : ', socket.id);
+  processIO.subscribe((io: IOType) => {
+    if (io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit') {
+      socket.emit(io.type, io.data);
     }
-
-    event = (io:IOType) =>{
-        if(io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit'){
-            this.socket.emit(io.type, io.data);
-        }
-    }
+  });
 }

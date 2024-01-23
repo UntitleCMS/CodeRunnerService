@@ -8,7 +8,7 @@ import { LexicalInterceptor } from 'src/interceptors/lexical/lexical.interceptor
 import { QuotaInterceptor } from 'src/interceptors/quota/quota.interceptor';
 import { SecurityInterceptor } from 'src/interceptors/security/security.interceptor';
 import { StoreInterceptor } from 'src/interceptors/store/store.interceptor';
-import { ProcessIOListener } from './processIO.listenner';
+import { redirectOputputTo } from './processIO.listenner';
 import { SocketData } from 'src/models/socket-data';
 import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-process/ensure-hass-process.interceptor';
 import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
@@ -28,7 +28,7 @@ export class EventGateway {
   runCode(client: Socket, data: SourceCodeModel) {
     const runner = this.runnerFactory.create(data.language);
     const ps = runner.execute(data);
-    new ProcessIOListener(client, ps);
+    redirectOputputTo(client,ps);
     const socketData = client.data as SocketData;
     socketData.process = ps;
     this.quotaRepo.increset(client.handshake.address);
