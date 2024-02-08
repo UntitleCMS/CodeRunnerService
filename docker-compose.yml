@@ -39,3 +39,34 @@ services:
       - ./CompilerContainer/SourceCode:/config/sourcecode
     ports:
       - "2224:2222"
+
+  runner:
+    image: runner
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 4000:3000
+    environment: 
+      PYTHON_SANDBOX_USER: runner
+      PYTHON_SANDBOX_HOST: python-slave
+      PYTHON_SANDBOX_PORT: 2222
+      PYTHON_SANDBOX_KEY: /keys/id_rsa
+
+      JAVA_SANDBOX_USER: runner
+      JAVA_SANDBOX_HOST: java-slave
+      JAVA_SANDBOX_PORT: 2222
+      JAVA_SANDBOX_KEY: /keys/id_rsa
+
+      GCC_SANDBOX_USER: runner
+      GCC_SANDBOX_HOST: gcc-slave 
+      GCC_SANDBOX_PORT: 2222
+      GCC_SANDBOX_KEY: /keys/id_rsa
+
+      LOCAL_CODE_STORAGE: /sourcecodes
+
+      EXECUTION_QUOTA: 10
+
+    volumes:
+      - ./CompilerContainer/Keys:/keys
+      - ./CompilerContainer/SourceCode:/sourcecodes
