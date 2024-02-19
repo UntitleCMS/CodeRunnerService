@@ -1,4 +1,4 @@
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 export type IOType =
   | { type: 'stdin'; data: string }
@@ -7,6 +7,7 @@ export type IOType =
   | { type: 'exit'; data: number | null }
   | { type: 'kill'; data: number | null };
 
+export class ProcessObservable extends Observable<IOType> {}
 export class ProcessSubject extends ReplaySubject<IOType> {
   exit(code?: number) {
     this.next({ type: 'exit', data: code });

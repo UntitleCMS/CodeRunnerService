@@ -13,6 +13,7 @@ import { SocketData } from 'src/models/socket-data';
 import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-process/ensure-hass-process.interceptor';
 import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
 import { CacheRepositoryService } from 'src/services/cache-repository/cache-repository.service';
+import { CacheInterceptor } from 'src/interceptors/cache/cache.interceptor';
 
 @WebSocketGateway()
 export class EventGateway {
@@ -24,6 +25,7 @@ export class EventGateway {
 
   @UseInterceptors(
     ClearProcessInterceptor,
+    CacheInterceptor,
     QuotaInterceptor,
     LexicalInterceptor,
     SecurityInterceptor,
@@ -51,7 +53,7 @@ export class EventGateway {
     });
 
     // save output subject to cache
-    this.cacheRepo.add(data.file, ps);
+    this.cacheRepo.add(data.file, ps.asObservable());
   }
 
   @UseInterceptors(EnsureHasProcessInterceptor)

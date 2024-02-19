@@ -1,9 +1,11 @@
-import { IOType, ProcessSubject } from '@app/core';
+import { IOType, ProcessObservable, ProcessSubject } from '@app/core';
 import { Injectable } from '@nestjs/common';
+import { Observable, concatMap, delay, from, of, tap } from 'rxjs';
 
 interface CacheRepository {
   clearCache(): void;
-  add(key: string, value: ProcessSubject): void;
+  add(key: string, value: ProcessObservable): void;
+  get(key: string): ProcessObservable | null;
 }
 
 @Injectable()
@@ -14,7 +16,7 @@ export class CacheRepositoryService implements CacheRepository {
     this.mockDB.clear();
   }
 
-  add(key: string, value: ProcessSubject): void {
+  add(key: string, value: ProcessObservable): void {
     if (!key) return;
 
     let buff: (IOType & { timestamp: number })[] = [];
@@ -29,8 +31,20 @@ export class CacheRepositoryService implements CacheRepository {
       complete: () => {
         console.log(key, ' <-- ', buff);
         this.mockDB.set(key, buff);
-        console.log(this.mockDB)
+        console.log(this.mockDB);
       },
     });
+  }
+  get(key: string): ProcessObservable | null {
+    let buff: (IOType & { timestamp: number })[] = this.mockDB.get(key);
+    if (!buff) return null;
+
+    return from(buff).pipe(
+      concatMap((i, index) => {
+        const delayTime =
+          index > 0 ? buff[index].timestamp - buff[index - 1].timestamp : 0;
+        return of(i).pipe(delay(delayTime));
+      }),
+    );
   }
 }

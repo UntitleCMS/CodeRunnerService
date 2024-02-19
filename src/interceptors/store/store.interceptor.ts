@@ -21,20 +21,8 @@ export class StoreInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const data: SourceCodeModel = context.switchToWs().getData();
-    data.file = this.getFileName(data);
     console.log('>> Store Interceptor :', data.file);
     return this.saveCode(data).pipe(switchMap(() => next.handle()));
-  }
-
-  private getFileName(data: SourceCodeModel): string {
-    const hash = createHash('sha256')
-      .update(data.sourcecode)
-      .digest('base64url');
-
-    if (data.language == Language.Python3) return hash + '.py';
-    if (data.language == Language.C12) return hash + '.c';
-    if (data.language == Language.Java17) return hash + '.java';
-    return hash;
   }
 
   private saveCode(data: SourceCodeModel): Observable<void> {
