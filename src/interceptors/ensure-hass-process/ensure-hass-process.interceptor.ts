@@ -14,7 +14,7 @@ export class EnsureHasProcessInterceptor implements NestInterceptor {
     if( socketData.process )
       return next.handle();
 
-    socket.emit("error", "Have no process is running.");
+    // socket.emit("error", "Have no process is running.");
     return of();
   }
 }
