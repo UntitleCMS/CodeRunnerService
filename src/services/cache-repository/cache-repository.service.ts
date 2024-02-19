@@ -23,7 +23,11 @@ export class CacheRepositoryService implements CacheRepository {
 
     let subscribe = value.subscribe({
       next: (o) => {
-        if (o.type == 'stdin' || (o.type == 'exit' && o.data == 124)) {
+        if (
+          o.type == 'stdin' ||
+          o.type == 'kill' ||
+          (o.type == 'exit' && o.data == 124)
+        ) {
           subscribe.unsubscribe();
         }
         buff.push({ ...o, timestamp: Date.now() });
