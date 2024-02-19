@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class QuotaRepositoryService {
 
     private static mockDB : Map<string, number>;
+    public QUOTA_MAX = this.config.get<number>("EXECUTION_QUOTA") ?? 5;
 
-    constructor(){
+    constructor(private config:ConfigService){
         QuotaRepositoryService.mockDB = new Map<string, number>();
         this.cleanScecdure();
     }
@@ -41,6 +43,12 @@ export class QuotaRepositoryService {
         const amount = this.totalExcete(ip) + 1;
         this.DB.set(ip, amount);
         return amount;
+    }
+    qoataLeft(id:string){
+        return this.QUOTA_MAX - this.totalExcete(id);
+    }
+    quotaReported(id:string){
+        return `${this.qoataLeft(id)}/${this.QUOTA_MAX}`;
     }
 
     private createIfNotExists(ip: string){

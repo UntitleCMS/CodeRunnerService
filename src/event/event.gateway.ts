@@ -1,6 +1,6 @@
 import { SourceCodeModel } from '@app/core';
 import { UseInterceptors } from '@nestjs/common';
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { OnGatewayConnection, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { RunnerFactory } from 'src/factories/runner.factory';
 import { ClearProcessInterceptor } from 'src/interceptors/clear-process/clear-process.interceptor';
@@ -14,14 +14,22 @@ import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-proces
 import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
 import { CacheRepositoryService } from 'src/services/cache-repository/cache-repository.service';
 import { CacheInterceptor } from 'src/interceptors/cache/cache.interceptor';
+import { SocketEventType } from 'src/constants/socket-event';
 
 @WebSocketGateway()
-export class EventGateway {
+export class EventGateway implements OnGatewayConnection{
   constructor(
     private readonly runnerFactory: RunnerFactory,
     private readonly quotaRepo: QuotaRepositoryService,
     private readonly cacheRepo: CacheRepositoryService,
   ) {}
+  handleConnection(client: Socket, data: any) {
+    this.reportQuota(client);
+  }
+
+  private reportQuota(client: Socket) {
+    client.emit(SocketEventType.QoataReport, this.quotaRepo.quotaReported(client.handshake.address))
+  }
 
   @UseInterceptors(
     ClearProcessInterceptor,
@@ -44,6 +52,8 @@ export class EventGateway {
 
     // count qouta
     this.quotaRepo.increset(client.handshake.address);
+    client.emit(SocketEventType.QuotaConsumedAlert);
+    this.reportQuota(client);
 
     // remove process subject when completly run
     ps.subscribe({

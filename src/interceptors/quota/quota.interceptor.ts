@@ -15,9 +15,8 @@ export class QuotaInterceptor implements NestInterceptor {
     const sock = context.switchToWs();
     const client:Socket = sock.getClient();
     const ip = client.handshake.address;
-    const QUOTA_MAX = this.config.get<number>("EXECUTION_QUOTA") ?? 5;
 
-    const quota = QUOTA_MAX - this.quotaRepo.totalExcete(ip);
+    const quota = this.quotaRepo.qoataLeft(ip);
 
     console.log("Your IP ", ip, `have ${quota} quota left.`);
     
