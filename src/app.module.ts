@@ -6,6 +6,7 @@ import { PythonRunner } from '@app/python';
 import { RunnerFactory } from './factories/runner.factory';
 import { LexicalFactory } from './factories/lexical.factory';
 import { QuotaRepositoryService } from './services/quota-repository/quota-repository.service';
+import { CacheRepositoryService } from './services/cache-repository/cache-repository.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -14,7 +15,8 @@ import { QuotaRepositoryService } from './services/quota-repository/quota-reposi
     EventGateway,
     RunnerFactory,
     LexicalFactory,
-    QuotaRepositoryService
+    QuotaRepositoryService,
+    CacheRepositoryService
   ],
 })
 export class AppModule {}

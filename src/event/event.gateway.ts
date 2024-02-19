@@ -12,12 +12,14 @@ import { redirectOputputTo } from './processIO.listenner';
 import { SocketData } from 'src/models/socket-data';
 import { EnsureHasProcessInterceptor } from 'src/interceptors/ensure-hass-process/ensure-hass-process.interceptor';
 import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
+import { CacheRepositoryService } from 'src/services/cache-repository/cache-repository.service';
 
 @WebSocketGateway()
 export class EventGateway {
   constructor(
     private readonly runnerFactory: RunnerFactory,
     private readonly quotaRepo: QuotaRepositoryService,
+    private readonly cacheRepo: CacheRepositoryService,
   ) {}
 
   @UseInterceptors(
@@ -47,6 +49,9 @@ export class EventGateway {
         socketData.process = null;
       },
     });
+
+    // save output subject to cache
+    this.cacheRepo.add(data.file, ps);
   }
 
   @UseInterceptors(EnsureHasProcessInterceptor)
