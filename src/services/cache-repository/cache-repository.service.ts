@@ -37,7 +37,7 @@ export class CacheRepositoryService implements CacheRepository {
         this.mockDB.set(key, buff);
         setTimeout(() => {
           this.mockDB.delete(key);
-        }, 10*60*1000);
+        }, 2*60*1000);
       },
     });
   }
