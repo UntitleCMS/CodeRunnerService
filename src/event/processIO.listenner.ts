@@ -7,5 +7,8 @@ export function redirectOputputTo(socket: Socket, processIO: ProcessObservable) 
     if (io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit') {
       socket.emit(io.type, io.data);
     }
+    if (io.type == 'exit' && io.data == 124){
+      socket.emit("stderr", "Timeout");
+    }
   });
 }
