@@ -30,7 +30,7 @@ export function redirectOputputTo(
       map(i=>{
         if(i.type!='stdout' || i.data.length <= 1000) return i;
         else {
-          return {...i, data: i.data.slice(0,1000)+'[buffer...]'}
+          return {...i, data: i.data.slice(0,1000)+'[buffer...]\r'}
         }
       })
     )
