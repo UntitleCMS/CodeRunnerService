@@ -27,25 +27,14 @@ export function redirectOputputTo(
           return io;
         }
       }),
-      map(i=>{
-        if(i.type!='stdout' || i.data.length <= 1000) return i;
+      map((i) => {
+        if (i.type != 'stdout' || i.data.length <= 1000) return i;
         else {
-          const x:IOType = {...i, data: i.data.slice(0,1000)}
-          // if(x.data.endsWith('\r\n')){
-            x.data = x.data + `\r\n[buffer...1000 of ${i.data.length}]` + '\r\n';
-          // }
-          // else if(x.data.endsWith('\r')){
-          //   x.data = x.data.slice(0,-1) + '[buffer...]' + '\r';
-          // }
-          // else if(x.data.endsWith('\n')){
-          //   x.data = x.data.slice(0,-1) + '[buffer...]' + '\n';
-          // }
-          // else{
-          //   x.data = x.data + '\n[buffer...]\n' + '\r\n';
-          // }
+          const x: IOType = { ...i, data: i.data.slice(0, 1000) };
+          x.data = x.data + `\r\n[buffer...1000 of ${i.data.length}]` + '\r';
           return x;
         }
-      })
+      }),
     )
     .subscribe((io: IOType) => {
       if (io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit') {
