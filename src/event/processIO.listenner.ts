@@ -31,18 +31,18 @@ export function redirectOputputTo(
         if(i.type!='stdout' || i.data.length <= 1000) return i;
         else {
           const x:IOType = {...i, data: i.data.slice(0,1000)}
-          if(x.data.endsWith('\r\n')){
-            x.data = x.data.slice(0,-2) + '[buffer...]' + '\r\n';
-          }
-          else if(x.data.endsWith('\r')){
-            x.data = x.data.slice(0,-1) + '[buffer...]' + '\r';
-          }
-          else if(x.data.endsWith('\n')){
-            x.data = x.data.slice(0,-1) + '[buffer...]' + '\n';
-          }
-          else{
-            x.data = x.data + '\n[buffer...]\n' + '\r\n';
-          }
+          // if(x.data.endsWith('\r\n')){
+            x.data = x.data + `\r\n[buffer...1000 of ${x.data.length}]` + '\r\n';
+          // }
+          // else if(x.data.endsWith('\r')){
+          //   x.data = x.data.slice(0,-1) + '[buffer...]' + '\r';
+          // }
+          // else if(x.data.endsWith('\n')){
+          //   x.data = x.data.slice(0,-1) + '[buffer...]' + '\n';
+          // }
+          // else{
+          //   x.data = x.data + '\n[buffer...]\n' + '\r\n';
+          // }
           return x;
         }
       })
