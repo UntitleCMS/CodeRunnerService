@@ -32,7 +32,7 @@ export function redirectOputputTo(
         else {
           const x:IOType = {...i, data: i.data.slice(0,1000)}
           // if(x.data.endsWith('\r\n')){
-            x.data = x.data + `\r\n[buffer...1000 of ${x.data.length}]` + '\r\n';
+            x.data = x.data + `\r\n[buffer...1000 of ${i.data.length}]` + '\r\n';
           // }
           // else if(x.data.endsWith('\r')){
           //   x.data = x.data.slice(0,-1) + '[buffer...]' + '\r';
