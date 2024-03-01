@@ -22,4 +22,4 @@ jobs:
       - name: Build the Docker image
         run: |
           docker build . --tag ghcr.io/betablog/coderunnerservice:v0
-          docker push ghcr.io/UntitleCMS/CodeRunnerService:v0
+          docker push ghcr.io/betablog/coderunnerservice:v0
