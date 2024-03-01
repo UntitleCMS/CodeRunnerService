@@ -1,4 +1,5 @@
 FROM node:18-alpine
+LABEL org.opencontainers.image.source = "https://github.com/UntitleCMS/CodeRunnerService"
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
