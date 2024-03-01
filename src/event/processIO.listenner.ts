@@ -43,6 +43,7 @@ export function redirectOputputTo(
           else{
             x.data = x.data + '\n[buffer...]\n' + '\r\n';
           }
+          return x;
         }
       })
     )
