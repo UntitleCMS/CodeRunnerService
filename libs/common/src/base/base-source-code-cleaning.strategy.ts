@@ -31,4 +31,13 @@ export abstract class BaseSourceCodeCleaner
     const x = cleanedCode.reduce((acc, n) => acc + n.text + '\n', '');
     return x;
   }
+
+  protected hasComment(node: SyntaxNode) {
+    if (node.type.includes('comment')) return true;
+
+    for (let n of node.children) {
+      if (this.hasComment(n)) return true;
+    }
+    return false;
+  }
 }
