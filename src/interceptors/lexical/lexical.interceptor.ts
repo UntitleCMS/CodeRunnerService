@@ -8,12 +8,12 @@ import {
 import { Observable, of } from 'rxjs';
 import { Socket } from 'socket.io';
 import { CodeCleanerFactory } from 'src/factories/code-cleaner.factory';
-import { LexicalFactory } from 'src/factories/lexical.factory';
+import { SyntaxCheckerFactory } from 'src/factories/syntax-checker.factory';
 
 @Injectable()
 export class LexicalInterceptor implements NestInterceptor {
   constructor(
-    private readonly lexicalFactory: LexicalFactory,
+    private readonly lexicalFactory: SyntaxCheckerFactory,
     private readonly codeCleaner: CodeCleanerFactory,
   ) {}
 
