@@ -1,4 +1,5 @@
 import { Language } from "@app/core";
+import { C12Cleaner } from "@app/gcc";
 import { JavaCleaner } from "@app/java/java.cleaner";
 import { Python3Cleaner } from "@app/python";
 import { Injectable } from "@nestjs/common";
@@ -10,8 +11,8 @@ export class CodeCleanerFactory {
         return new Python3Cleaner();
     if(language == Language.Java17)
         return new JavaCleaner();
-    // if(language == Language.C12)
-    //     return new C12Verificator();
+    if(language == Language.C12)
+        return new C12Cleaner();
     else throw new Error(`Language '${language}' is not supported.`);
   }
 }
