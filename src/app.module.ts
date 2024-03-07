@@ -7,6 +7,7 @@ import { RunnerFactory } from './factories/runner.factory';
 import { LexicalFactory } from './factories/lexical.factory';
 import { QuotaRepositoryService } from './services/quota-repository/quota-repository.service';
 import { CacheRepositoryService } from './services/cache-repository/cache-repository.service';
+import { CodeCleanerFactory } from './factories/code-cleaner.factory';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -15,6 +16,7 @@ import { CacheRepositoryService } from './services/cache-repository/cache-reposi
     EventGateway,
     RunnerFactory,
     LexicalFactory,
+    CodeCleanerFactory,
     QuotaRepositoryService,
     CacheRepositoryService
   ],

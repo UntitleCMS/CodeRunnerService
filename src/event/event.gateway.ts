@@ -33,9 +33,9 @@ export class EventGateway implements OnGatewayConnection{
 
   @UseInterceptors(
     ClearProcessInterceptor,
+    LexicalInterceptor,
     CacheInterceptor,
     QuotaInterceptor,
-    LexicalInterceptor,
     SecurityInterceptor,
     StoreInterceptor,
   )
