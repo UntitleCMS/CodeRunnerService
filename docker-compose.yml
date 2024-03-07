@@ -28,15 +28,10 @@ services:
       - "2223:2222"
 
   gcc-slave:
-    image: gcc-slave
-    build:
-      context: ./CompilerContainer
-      dockerfile: GCC.Dockerfile
-    environment:
-      USER_NAME: runner
+    image: ghcr.io/untitlecms/gcc-sandbox:v0
     volumes:
-      - ./CompilerContainer/Keys:/config/.ssh
-      - ./CompilerContainer/SourceCode:/config/sourcecode
+      - ./CompilerContainer/Keys/authorized_keys:/config/authorized_keys
+      - ./CompilerContainer/SourceCode:/sourcecode
     ports:
       - "2224:2222"
 
