@@ -1,5 +1,5 @@
 import { Language } from "@app/core";
-import { Python3Cleaner } from "@app/python/python3.cleancer";
+import { Python3Cleaner } from "@app/python";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
