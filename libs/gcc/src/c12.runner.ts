@@ -10,6 +10,6 @@ export class C12Runner extends BaseRunner {
   protected createChildProcess(
     code: SourceCodeModel,
   ): ChildProcessWithoutNullStreams {
-    return spawn('ssh', [...this.config.toArray(), `timeout 10 ./run ${code.file}`]);
+    return spawn('ssh', [...this.config.toArray(), `timeout 10 /config/run ${code.file}`]);
   }
 }
