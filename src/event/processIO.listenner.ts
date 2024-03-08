@@ -1,5 +1,5 @@
 import { IOType, ProcessObservable } from '@app/core';
-import { buffer, bufferTime, from, map, mergeMap, of, tap } from 'rxjs';
+import { bufferTime, filter, from, map, mergeMap } from 'rxjs';
 import { Socket } from 'socket.io';
 
 export function redirectOputputTo(
@@ -10,13 +10,18 @@ export function redirectOputputTo(
   processIO
     .pipe(
       bufferTime(100),
+      filter((i) => i.length > 0),
       mergeMap((buff) => {
         {
           let x: IOType[] = [];
 
           for (let i = 0; i < buff.length; i++) {
             const item = buff[i];
-            if (item.type != 'stdout' || x.length == 0) {
+            if (
+              item.type != 'stdout' ||
+              x.length == 0 ||
+              x[x.length - 1].type != 'stdout'
+            ) {
               x.push(item);
             } else {
               x[x.length - 1].data += item.data;

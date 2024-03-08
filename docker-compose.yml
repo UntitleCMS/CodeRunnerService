@@ -36,7 +36,7 @@ services:
       - "2224:2222"
 
   runner:
-    image: runner
+    image: ghcr.io/untitlecms/code-runner-service:v0
     build: 
       context: ./
       dockerfile: Dockerfile
