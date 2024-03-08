@@ -12,6 +12,6 @@ export class PythonRunner extends BaseRunner {
   ): ChildProcessWithoutNullStreams {
     console.log(code);
     
-    return spawn('ssh', [...this.config.toArray(), `timeout 10 python -u ./sourcecode/${code.file}`]);
+    return spawn('ssh', [...this.config.toArray(), `/config/run ${code.file}`]); 
   }
 }
