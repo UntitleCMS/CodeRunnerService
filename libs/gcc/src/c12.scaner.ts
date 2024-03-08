@@ -1,4 +1,4 @@
-import { SourceCodeFeaturBlockingStrategy, SourceCodeModel } from '@app/core';
+import { CodeScanResult, SourceCodeFeaturBlockingStrategy, SourceCodeModel } from '@app/core';
 import { SyntaxNode, Tree } from 'tree-sitter';
 
 const ALLOWED_HEADERS = [
@@ -64,40 +64,67 @@ export class C12Scaner extends SourceCodeFeaturBlockingStrategy {
     this.parser.setLanguage(c);
   }
 
-  scan(code: SourceCodeModel): boolean {
-    const tree = this.parser.parse(code.sourcecode);
-    return this.isAllowedHeaders(tree) && this.isAllowedFn(tree.rootNode);
+  isSecure(code: SourceCodeModel): boolean {
+    return this.scan(code).isSucured;
   }
 
-  protected isAllowedFn(node: SyntaxNode) {
+  scan(code: SourceCodeModel): CodeScanResult {
+    const tree = this.parser.parse(code.sourcecode);
+
+    const hd = this.isAllowedHeaders(tree);
+    if (!hd.isSucured) return hd;
+
+    const fn = this.isAllowedFn(tree.rootNode);
+    return fn;
+  }
+
+  protected isAllowedFn(node: SyntaxNode): CodeScanResult {
     if (node.type.includes('call_expression')) {
       const fnName = node.child(0).text;
-      return !BLOCK_FUN.includes(fnName);
+      if( BLOCK_FUN.includes(fnName) ){
+        return {
+          isSucured: false,
+          msg: `Function "${fnName}" is not allowed`
+        }
+      }
     }
 
     if (node.type == 'declaration') {
       const pointer = node.text.match(/&\w+/);
       for (let p of pointer || []) {
-        if (BLOCK_FUN.includes(p.slice(1, p.length))) return false;
+        if (BLOCK_FUN.includes(p.slice(1, p.length))){
+          return {
+            isSucured: false,
+            msg:`Not Allowed to point to "${p}"`
+          };
+        }
       }
     }
 
     for (let n of node.children) {
-      if (!this.isAllowedFn(n)) return false;
+      const scanResult = this.isAllowedFn(n);
+      if (!scanResult.isSucured) return scanResult;
     }
-    return true;
+    return {
+      isSucured: true
+    };
   }
 
-  protected isAllowedHeaders(tree: Tree) {
+  protected isAllowedHeaders(tree: Tree): CodeScanResult {
     for (let n of tree.rootNode.children) {
       if (!n.type.includes('include')) continue;
 
       const lib = n.child(1).text.slice(1, -1);
       if (!ALLOWED_HEADERS.includes(lib)) {
-        return false;
+        return {
+          isSucured: false,
+          msg: `Header file "${lib}" is not allowed`
+        };
       }
     }
 
-    return true;
+    return {
+      isSucured: true
+    };
   }
 }

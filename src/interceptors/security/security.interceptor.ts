@@ -16,13 +16,14 @@ export class SecurityInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const data = context.switchToWs().getData() as SourceCodeModel;
     const scaner = this.scanerFactory.create(data.language);
-    const isSecure = scaner.scan(data);
+    const scanResult = scaner.scan(data);
 
-    console.log('>> Security Intercept :', isSecure);
+    console.log('>> Security Intercept :', scanResult);
 
-    if (isSecure) return next.handle();
+    if (scanResult.isSucured) return next.handle();
     else {
       const sock = context.switchToWs().getClient() as Socket;
+      sock.emit('stderr', `${scanResult.msg}\n`);
       sock.emit('error', 'Code not secure');
       return of();
     }

@@ -1,5 +1,6 @@
-import { SourceCodeModel } from "@app/core";
+import { CodeScanResult, SourceCodeModel } from "@app/core";
 
 export abstract class SourceCodeFeaturBlockingStrategy {
-  abstract scan(code:SourceCodeModel):boolean;
+  abstract isSecure(code:SourceCodeModel):boolean;
+  abstract scan(code:SourceCodeModel):CodeScanResult;
 }
