@@ -8,6 +8,7 @@ import { SyntaxCheckerFactory } from './factories/syntax-checker.factory';
 import { QuotaRepositoryService } from './services/quota-repository/quota-repository.service';
 import { CacheRepositoryService } from './services/cache-repository/cache-repository.service';
 import { CodeCleanerFactory } from './factories/code-cleaner.factory';
+import { CodeScanerFactory } from './factories/code-scaner.factory';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -19,6 +20,7 @@ import { CodeCleanerFactory } from './factories/code-cleaner.factory';
     CodeCleanerFactory,
     QuotaRepositoryService,
     CacheRepositoryService,
+    CodeScanerFactory,
   ],
 })
 export class AppModule {}
