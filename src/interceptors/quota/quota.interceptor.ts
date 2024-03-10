@@ -14,16 +14,20 @@ export class QuotaInterceptor implements NestInterceptor {
     
     const sock = context.switchToWs();
     const client:Socket = sock.getClient();
-    const ip = client.handshake.address;
 
-    const quota = this.quotaRepo.qoataLeft(ip);
+    const caller_ip = client.handshake.address;
+    const forwarded_for = client.handshake.headers['x-forwarded-for'] as string;
+    const endUserIP = forwarded_for || caller_ip;
 
-    console.log("Your IP ", ip, `have ${quota} quota left.`);
+    const quota = this.quotaRepo.qoataLeft(endUserIP);
+
+    console.log(`ip forwarding :`, [forwarded_for, caller_ip]);
+    console.log("Client IP ", endUserIP, `have ${quota} quota left.`);
     
     if(quota>0)
       return next.handle();
 
-    (sock.getClient() as Socket).emit("error", `Your IP : "${ip}" have no quota left.`);
+    (sock.getClient() as Socket).emit("error", `Your IP : "${endUserIP}" have no quota left.`);
     return of();
   }
 }
