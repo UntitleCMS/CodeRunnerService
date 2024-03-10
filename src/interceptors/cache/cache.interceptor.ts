@@ -1,5 +1,10 @@
 import { Language, SourceCodeModel } from '@app/core';
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { createHash } from 'crypto';
 import { Observable, of } from 'rxjs';
 import { redirectOputputTo } from 'src/event/processIO.listenner';
@@ -7,23 +12,20 @@ import { CacheRepositoryService } from 'src/services/cache-repository/cache-repo
 
 @Injectable()
 export class CacheInterceptor implements NestInterceptor {
-
-  constructor(
-    private readonly cacheRepo: CacheRepositoryService,
-  ){}
+  constructor(private readonly cacheRepo: CacheRepositoryService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const data: SourceCodeModel = context.switchToWs().getData();
     data.file = this.getFileName(data);
     console.log('>> Cache for :', data.file);
 
-    let buff = this.cacheRepo.get(data.file);
+    if (!!data.disableCache) return next.handle();
 
-    if(!buff)
-      return  next.handle();
+    let cache = this.cacheRepo.get(data.file);
+    if (!cache) return next.handle();
 
-    console.log("Streaming cache :", true);
-    redirectOputputTo(context.switchToWs().getClient(), buff)
+    console.log('Streaming cache :', true);
+    redirectOputputTo(context.switchToWs().getClient(), cache);
 
     return of();
   }
