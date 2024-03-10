@@ -19,6 +19,8 @@ export class QuotaInterceptor implements NestInterceptor {
     const forwarded_for = client.handshake.headers['x-forwarded-for'] as string;
     const endUserIP = forwarded_for || caller_ip;
 
+    client.data.endUserIP = endUserIP;
+
     const quota = this.quotaRepo.qoataLeft(endUserIP);
 
     console.log(`ip forwarding :`, [forwarded_for, caller_ip]);

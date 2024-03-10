@@ -51,7 +51,7 @@ export class EventGateway implements OnGatewayConnection{
     redirectOputputTo(client, ps);
 
     // count qouta
-    this.quotaRepo.increset(client.handshake.address);
+    this.quotaRepo.increset(client.data.endUserIP);
     client.emit(SocketEventType.QuotaConsumedAlert);
     this.reportQuota(client);
 
