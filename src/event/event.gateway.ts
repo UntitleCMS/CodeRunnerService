@@ -28,7 +28,7 @@ export class EventGateway implements OnGatewayConnection{
   }
 
   private reportQuota(client: Socket) {
-    client.emit(SocketEventType.QoataReport, this.quotaRepo.quotaReported(client.handshake.address))
+    client.emit(SocketEventType.QoataReport, this.quotaRepo.quotaReported(client.data.endUserIP))
   }
 
   @UseInterceptors(
