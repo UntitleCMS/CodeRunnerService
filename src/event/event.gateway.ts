@@ -81,6 +81,7 @@ export class EventGateway implements OnGatewayConnection{
       socketData.process.kill(sigkill);
     }else{
       socketData.outputSupscription.unsubscribe();
+      client.emit('exit')
       socketData.outputSupscription = null;
     }
   }
