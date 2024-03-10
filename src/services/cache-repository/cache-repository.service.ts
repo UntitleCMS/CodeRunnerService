@@ -1,5 +1,6 @@
 import { IOType, ProcessObservable, ProcessSubject } from '@app/core';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Observable, concatMap, delay, from, of, tap } from 'rxjs';
 
 interface CacheRepository {
@@ -10,6 +11,13 @@ interface CacheRepository {
 
 @Injectable()
 export class CacheRepositoryService implements CacheRepository {
+
+  lifetime: number;
+
+  constructor(private readonly config: ConfigService){
+    this.lifetime = this.config.get<number>('CACHE_LIFETIME');
+  }
+
   private readonly mockDB = new Map<string, any>();
 
   clearCache(): void {
@@ -37,7 +45,8 @@ export class CacheRepositoryService implements CacheRepository {
         this.mockDB.set(key, buff);
         setTimeout(() => {
           this.mockDB.delete(key);
-        }, 2*60*1000);
+          console.log([`lifetime : ${this.lifetime}m`],`Cache for "${key}" is deleted`);
+        }, this.lifetime *60*1000);
       },
     });
   }

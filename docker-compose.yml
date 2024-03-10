@@ -58,6 +58,7 @@ services:
       EXECUTION_QUOTA: 10
       MAX_EXECUTE_TIME: 100
       CRON_RESET_QUOTA: '0 0 * * * *'
+      CACHE_LIFETIME: 1
 
     volumes:
       - ./CompilerContainer/Keys:/keys
