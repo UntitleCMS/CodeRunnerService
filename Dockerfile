@@ -1,6 +1,10 @@
 FROM node:18-alpine
 LABEL org.opencontainers.image.source = "https://github.com/UntitleCMS/CodeRunnerService"
 
+# terminate after 60 seconds
+ENV MAX_EXECUTE_TIME=60
+ENV EXECUTION_QUOTA=10
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

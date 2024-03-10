@@ -12,6 +12,7 @@ export class RunnerFactory {
 
   create(language: string) {
     const config = new SshConnectionConfig();
+    config.MAX_EXECUTE_TIME = this.config.get<number>('MAX_EXECUTE_TIME') || 60;
     
     if (language == Language.Python3){
       config.key = this.config.get('PYTHON_SANDBOX_KEY');

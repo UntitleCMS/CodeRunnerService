@@ -10,6 +10,6 @@ export class Java17Runner extends BaseRunner {
   protected createChildProcess(
     code: SourceCodeModel,
   ): ChildProcessWithoutNullStreams {
-    return spawn('ssh', [...this.config.toArray(), `timeout 10 /opt/jdk-17.0.6+10/bin/java ./sourcecode/${code.file}`]);
+    return spawn('ssh', [...this.config.toArray(), `timeout ${this.config.MAX_EXECUTE_TIME} /opt/jdk-17.0.6+10/bin/java ./sourcecode/${code.file}`]);
   }
 }

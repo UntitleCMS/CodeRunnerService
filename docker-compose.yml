@@ -56,6 +56,7 @@ services:
       LOCAL_CODE_STORAGE: /sourcecodes
 
       EXECUTION_QUOTA: 10
+      MAX_EXECUTE_TIME: 100
 
     volumes:
       - ./CompilerContainer/Keys:/keys

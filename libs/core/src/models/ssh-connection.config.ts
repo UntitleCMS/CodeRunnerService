@@ -3,6 +3,7 @@ export class SshConnectionConfig {
     host? : string;
     port? : number;
     key? : string;
+    MAX_EXECUTE_TIME: number = 60;
 
     toArray(){
         const config: string[] = []
