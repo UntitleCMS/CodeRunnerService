@@ -1,6 +1,10 @@
 import { SourceCodeModel } from '@app/core';
 import { UseInterceptors } from '@nestjs/common';
-import { OnGatewayConnection, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+} from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { RunnerFactory } from 'src/factories/runner.factory';
 import { ClearProcessInterceptor } from 'src/interceptors/clear-process/clear-process.interceptor';
@@ -17,18 +21,26 @@ import { CacheInterceptor } from 'src/interceptors/cache/cache.interceptor';
 import { SocketEventType } from 'src/constants/socket-event';
 
 @WebSocketGateway()
-export class EventGateway implements OnGatewayConnection{
+export class EventGateway implements OnGatewayConnection {
   constructor(
     private readonly runnerFactory: RunnerFactory,
     private readonly quotaRepo: QuotaRepositoryService,
     private readonly cacheRepo: CacheRepositoryService,
   ) {}
   handleConnection(client: Socket, data: any) {
+    const caller_ip = client.handshake.address;
+    const forwarded_for = client.handshake.headers['x-forwarded-for'] as string;
+    const endUserIP = forwarded_for || caller_ip;
+    client.data.endUserIP = endUserIP;
+
     this.reportQuota(client);
   }
 
   private reportQuota(client: Socket) {
-    client.emit(SocketEventType.QoataReport, this.quotaRepo.quotaReported(client.data.endUserIP))
+    client.emit(
+      SocketEventType.QoataReport,
+      this.quotaRepo.quotaReported(client.data.endUserIP),
+    );
   }
 
   @UseInterceptors(
@@ -77,11 +89,11 @@ export class EventGateway implements OnGatewayConnection{
   @SubscribeMessage('kill')
   killProcess(client: Socket, sigkill: number) {
     const socketData = client.data as SocketData;
-    if(!!socketData.process){
+    if (!!socketData.process) {
       socketData.process.kill(sigkill);
-    }else{
+    } else {
       socketData.outputSupscription.unsubscribe();
-      client.emit('exit')
+      client.emit('exit');
       socketData.outputSupscription = null;
     }
   }

@@ -2,6 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { ConfigService } from '@nestjs/config';
 import { Observable, of } from 'rxjs';
 import { Socket } from 'socket.io';
+import { SocketData } from 'src/models/socket-data';
 import { QuotaRepositoryService } from 'src/services/quota-repository/quota-repository.service';
 
 @Injectable()
@@ -14,22 +15,17 @@ export class QuotaInterceptor implements NestInterceptor {
     
     const sock = context.switchToWs();
     const client:Socket = sock.getClient();
+    const sockData: SocketData = client.data;
 
-    const caller_ip = client.handshake.address;
-    const forwarded_for = client.handshake.headers['x-forwarded-for'] as string;
-    const endUserIP = forwarded_for || caller_ip;
+    const quota = this.quotaRepo.qoataLeft(sockData.endUserIP);
 
-    client.data.endUserIP = endUserIP;
-
-    const quota = this.quotaRepo.qoataLeft(endUserIP);
-
-    console.log(`ip forwarding :`, [forwarded_for, caller_ip]);
-    console.log("Client IP ", endUserIP, `have ${quota} quota left.`);
+    console.log(`ip forwarding :`, [sockData.endUserIP]);
+    console.log("Client IP ", sockData.endUserIP, `have ${quota} quota left.`);
     
     if(quota>0)
       return next.handle();
 
-    (sock.getClient() as Socket).emit("error", `Your IP : "${endUserIP}" have no quota left.`);
+    (sock.getClient() as Socket).emit("error", `Your IP : "${sockData.endUserIP}" have no quota left.`);
     return of();
   }
 }
