@@ -7,7 +7,7 @@ export function redirectOputputTo(
   processIO: ProcessObservable,
 ) {
   console.info('Redirecting output to client : ', socket.id);
-  processIO
+  socket.data.outputSupscription = processIO
     .pipe(
       bufferTime(100),
       filter((i) => i.length > 0),
@@ -41,12 +41,15 @@ export function redirectOputputTo(
         }
       }),
     )
-    .subscribe((io: IOType) => {
-      if (io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit') {
-        socket.emit(io.type, io.data);
-      }
-      if (io.type == 'exit' && io.data == 124) {
-        socket.emit('error', 'Timeout');
-      }
+    .subscribe({
+      next: (io: IOType) => {
+        if (io.type == 'stderr' || io.type == 'stdout' || io.type == 'exit') {
+          socket.emit(io.type, io.data);
+        }
+        if (io.type == 'exit' && io.data == 124) {
+          socket.emit('error', 'Timeout');
+        }
+      },
+      complete: () => {socket.data.outputSupscription = null}
     });
 }

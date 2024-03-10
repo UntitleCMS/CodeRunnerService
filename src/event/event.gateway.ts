@@ -51,7 +51,7 @@ export class EventGateway implements OnGatewayConnection{
     redirectOputputTo(client, ps);
 
     // count qouta
-    this.quotaRepo.increset(client.data.endUserIP);
+    this.quotaRepo.increset(socketData.endUserIP);
     client.emit(SocketEventType.QuotaConsumedAlert);
     this.reportQuota(client);
 
@@ -77,7 +77,12 @@ export class EventGateway implements OnGatewayConnection{
   @SubscribeMessage('kill')
   killProcess(client: Socket, sigkill: number) {
     const socketData = client.data as SocketData;
-    socketData.process.kill(sigkill);
+    if(!!socketData.process){
+      socketData.process.kill(sigkill);
+    }else{
+      socketData.outputSupscription.unsubscribe();
+      socketData.outputSupscription = null;
+    }
   }
 
   // DEV
