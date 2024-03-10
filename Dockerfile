@@ -4,6 +4,7 @@ LABEL org.opencontainers.image.source = "https://github.com/UntitleCMS/CodeRunne
 # terminate after 60 seconds
 ENV MAX_EXECUTE_TIME=60
 ENV EXECUTION_QUOTA=10
+ENV CRON_RESET_QUOTA='0 0 * * * *'
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
