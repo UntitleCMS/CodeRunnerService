@@ -76,11 +76,12 @@ export class Java17Scanner extends SourceCodeFeaturBlockingStrategy {
       const className = node.children.filter(
         (i) => i.type == 'type_identifier',
       )[0].text;
-      if (NOT_ALLOWED_CLASSES.includes(className)) {
-        return {
-          isSucured: false,
-          msg: `Class "${className}" is not allowed`
-        };
+      for(let i of NOT_ALLOWED_CLASSES){
+        if (className.startsWith(i))
+          return {
+            isSucured: false,
+            msg: `Class "${className}" is not allowed`
+          };
       }
     }
 
