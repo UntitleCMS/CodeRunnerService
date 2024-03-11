@@ -33,6 +33,7 @@ const ALLOWED_HEADERS = [
   'uchar.h',
   'wchar.h',
   'wctype.h',
+  'unistd.h'
 ];
 
 const BLOCK_FUN = [
