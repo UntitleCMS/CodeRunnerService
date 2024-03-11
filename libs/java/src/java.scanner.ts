@@ -21,7 +21,7 @@ const ALLOWED_PACKAGES = [
   'javax.crypto',
 ];
 
-const NOT_ALLOWED_CLASSES = ['java.io.File', 'File'];
+const NOT_ALLOWED_CLASSES = ['java.io.File', 'File', 'java.io.Process', 'Process'];
 
 export class Java17Scanner extends SourceCodeFeaturBlockingStrategy {
   private parser = new Parser();
