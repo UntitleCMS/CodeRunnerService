@@ -135,7 +135,7 @@ export class Python3Scanner extends SourceCodeFeaturBlockingStrategy {
 
     for (let n of node.children) {
       const res = this.isAllowedFun(n);
-      if (!res) return res;
+      if (!res.isSucured) return res;
     }
 
     return { isSucured: true };
